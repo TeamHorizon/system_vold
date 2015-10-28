@@ -33,11 +33,15 @@ namespace ntfs {
 
 static const char* kMkfsPath = "/system/bin/mkfs.ntfs";
 static const char* kFsckPath = "/system/bin/fsck.ntfs";
+<<<<<<< HEAD
 #ifdef CONFIG_KERNEL_HAVE_NTFS
 static const char* kMountPath = "/system/bin/mount";
 #else
 static const char* kMountPath = "/system/bin/mount.ntfs";
 #endif
+=======
+static const char* kMountPath = "/system/bin/mount.ntfs";
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
 
 bool IsSupported() {
     return access(kMkfsPath, X_OK) == 0
@@ -52,8 +56,12 @@ status_t Check(const std::string& source) {
     cmd.push_back("-n");
     cmd.push_back(source);
 
+<<<<<<< HEAD
     // Ntfs devices are currently always untrusted
     return ForkExecvp(cmd, sFsckUntrustedContext);
+=======
+    return ForkExecvp(cmd, sFsckContext);
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
 }
 
 status_t Mount(const std::string& source, const std::string& target, bool ro,
@@ -65,12 +73,17 @@ status_t Mount(const std::string& source, const std::string& target, bool ro,
     const char* c_target = target.c_str();
 
     sprintf(mountData,
+<<<<<<< HEAD
 #ifdef CONFIG_KERNEL_HAVE_NTFS
             "utf8,uid=%d,gid=%d,fmask=%o,dmask=%o,nodev,nosuid",
 #else
             "utf8,uid=%d,gid=%d,fmask=%o,dmask=%o,"
             "shortname=mixed,nodev,nosuid,dirsync",
 #endif
+=======
+            "utf8,uid=%d,gid=%d,fmask=%o,dmask=%o,"
+            "shortname=mixed,nodev,nosuid,dirsync",
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
             ownerUid, ownerGid, permMask, permMask);
 
     if (!executable)
@@ -82,10 +95,13 @@ status_t Mount(const std::string& source, const std::string& target, bool ro,
 
     std::vector<std::string> cmd;
     cmd.push_back(kMountPath);
+<<<<<<< HEAD
 #ifdef CONFIG_KERNEL_HAVE_NTFS
     cmd.push_back("-t");
     cmd.push_back("ntfs");
 #endif
+=======
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
     cmd.push_back("-o");
     cmd.push_back(mountData);
     cmd.push_back(c_source);
