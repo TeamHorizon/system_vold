@@ -113,7 +113,11 @@ status_t PublicVolume::doMount() {
         return -EIO;
     }
 
+<<<<<<< HEAD
     // Use volume label and otherwise UUID as stable name, if available
+=======
+    // Use UUID as stable name, if available
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
     std::string stableName = getId();
     if (!mFsLabel.empty()) {
         stableName = mFsLabel;
@@ -153,9 +157,15 @@ status_t PublicVolume::doMount() {
     if (mFsType == "exfat") {
         ret = exfat::Check(mDevPath);
     } else if (mFsType == "ext4") {
+<<<<<<< HEAD
         ret = ext4::Check(mDevPath, mRawPath, false);
     } else if (mFsType == "f2fs") {
         ret = f2fs::Check(mDevPath, false);
+=======
+        ret = ext4::Check(mDevPath, mRawPath);
+    } else if (mFsType == "f2fs") {
+        ret = f2fs::Check(mDevPath);
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
     } else if (mFsType == "ntfs") {
         ret = ntfs::Check(mDevPath);
     } else if (mFsType == "vfat") {
@@ -172,10 +182,16 @@ status_t PublicVolume::doMount() {
         ret = exfat::Mount(mDevPath, mRawPath, false, false, false,
                 AID_MEDIA_RW, AID_MEDIA_RW, 0007);
     } else if (mFsType == "ext4") {
+<<<<<<< HEAD
         ret = ext4::Mount(mDevPath, mRawPath, false, false, true, mMntOpts,
                 false);
     } else if (mFsType == "f2fs") {
         ret = f2fs::Mount(mDevPath, mRawPath, false);
+=======
+        ret = ext4::Mount(mDevPath, mRawPath, false, false, true);
+    } else if (mFsType == "f2fs") {
+        ret = f2fs::Mount(mDevPath, mRawPath);
+>>>>>>> fa407a0... vold: add support for more filesystems for public storage
     } else if (mFsType == "ntfs") {
         ret = ntfs::Mount(mDevPath, mRawPath, false, false, false,
                 AID_MEDIA_RW, AID_MEDIA_RW, 0007, true);
