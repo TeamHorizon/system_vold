@@ -33,11 +33,7 @@ namespace exfat {
 
 static const char* kMkfsPath = "/system/bin/mkfs.exfat";
 static const char* kFsckPath = "/system/bin/fsck.exfat";
-#ifdef CONFIG_KERNEL_HAVE_EXFAT
-static const char* kMountPath = "/system/bin/mount";
-#else
 static const char* kMountPath = "/system/bin/mount.exfat";
-#endif
 
 bool IsSupported() {
     return access(kMkfsPath, X_OK) == 0
@@ -51,8 +47,7 @@ status_t Check(const std::string& source) {
     cmd.push_back(kFsckPath);
     cmd.push_back(source);
 
-    // Exfat devices are currently always untrusted
-    return ForkExecvp(cmd, sFsckUntrustedContext);
+    return ForkExecvp(cmd, sFsckContext);
 }
 
 status_t Mount(const std::string& source, const std::string& target, bool ro,
@@ -63,21 +58,13 @@ status_t Mount(const std::string& source, const std::string& target, bool ro,
     const char* c_target = target.c_str();
 
     sprintf(mountData,
-#ifdef CONFIG_KERNEL_HAVE_EXFAT
-            "noatime,nodev,nosuid,uid=%d,gid=%d,fmask=%o,dmask=%o,%s,%s",
-#else
             "noatime,nodev,nosuid,dirsync,uid=%d,gid=%d,fmask=%o,dmask=%o,%s,%s",
-#endif
             ownerUid, ownerGid, permMask, permMask,
             (executable ? "exec" : "noexec"),
             (ro ? "ro" : "rw"));
 
     std::vector<std::string> cmd;
     cmd.push_back(kMountPath);
-#ifdef CONFIG_KERNEL_HAVE_EXFAT
-    cmd.push_back("-t");
-    cmd.push_back("exfat");
-#endif
     cmd.push_back("-o");
     cmd.push_back(mountData);
     cmd.push_back(c_source);
